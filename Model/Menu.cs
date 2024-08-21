@@ -10,7 +10,7 @@ namespace SimpleCMS.Model
 
         public string Description { get; set; }
 
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
 
         public ICollection<MenuItem> Items { get; set; }
