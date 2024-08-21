@@ -1,0 +1,56 @@
+﻿@page "/menus/create"
+
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Menu</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Menu" OnValidSubmit="AddMenu" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label> 
+                <InputText id="title" @bind-Value="Menu.Title" class="form-control" /> 
+                <ValidationMessage For="() => Menu.Title" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label> 
+                <InputText id="description" @bind-Value="Menu.Description" class="form-control" /> 
+                <ValidationMessage For="() => Menu.Description" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="icon" class="form-label">Icon:</label> 
+                <InputText id="icon" @bind-Value="Menu.Icon" class="form-control" /> 
+                <ValidationMessage For="() => Menu.Icon" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/menus">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Menu Menu { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddMenu()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Menu.Add(Menu);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/menus");
+    }
+}

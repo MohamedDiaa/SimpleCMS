@@ -1,0 +1,100 @@
+﻿@page "/Menus/edit"
+
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Menu</h4>
+<hr />
+@if (Menu is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Menu" OnValidSubmit="UpdateMenu" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Menu.Id" value="@Menu.Id" />
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <InputText id="title" @bind-Value="Menu.Title" class="form-control" />
+                    <ValidationMessage For="() => Menu.Title" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="Menu.Description" class="form-control" />
+                    <ValidationMessage For="() => Menu.Description" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="icon" class="form-label">Icon:</label>
+                    <InputText id="icon" @bind-Value="Menu.Icon" class="form-control" />
+                    <ValidationMessage For="() => Menu.Icon" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/menus">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public Menu? Menu { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Menu ??= await context.Menu.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Menu is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateMenu()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Menu!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!MenuExists(Menu!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/menus");
+    }
+
+    bool MenuExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Menu.Any(e => e.Id == id);
+    }
+}
