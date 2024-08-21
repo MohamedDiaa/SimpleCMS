@@ -7,8 +7,8 @@ namespace SimpleCMS.Data
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<SimpleCMS.Model.Menu> Menu { get; set; } = default!;
+        public DbSet<MenuItem> MenuItem { get; set; } = default!;
 
-        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

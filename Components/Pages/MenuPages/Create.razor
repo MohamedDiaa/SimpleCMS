@@ -4,12 +4,14 @@
 @using SimpleCMS.Model
 @inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+
 
 <PageTitle>Create</PageTitle>
 
 <h1>Create</h1>
 
-<h4>Menu</h4>
+<h4>Menu @Name</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -44,11 +46,24 @@
 
     [SupplyParameterFromForm]
     public Menu Menu { get; set; } = new();
+    public string Name { get; set; } = "";
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        Name = user.Identity.Name;
+    }
 
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task AddMenu()
     {
         using var context = DbFactory.CreateDbContext();
+        if (Name != null) {
+
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == Name);
+            Menu.OwnerId = user.Id;
+        }
         context.Menu.Add(Menu);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/menus");
