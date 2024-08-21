@@ -54,7 +54,8 @@ namespace SimpleCMS.Seed
                 var menuItem = new MenuItem
                 {
                     Title = faker.Lorem.Slug(2),
-                    Position = random.Next(0,count)
+                    Position = random.Next(0,count),
+                    View = CreateView()
                 };
 
                 list.Add(menuItem);
@@ -63,16 +64,34 @@ namespace SimpleCMS.Seed
             return list;
         }
 
-        private static void CreateView()
+        private static View CreateView()
         {
-
-            throw new NotImplementedException();
+                var view =  new View
+                {
+                    ContentBlocks = CreateContentBlocks()
+                  
+                };
+           
+            return view;
         }
 
-        private static void CreateContentBlocks()
+        private static ICollection<ContentBlock> CreateContentBlocks()
         {
 
-            throw new NotImplementedException();
+            var list = new List<ContentBlock>();
+            for (int i = 0; i < 3; i++)
+            {
+
+                var content = new ContentBlock
+                {
+                    Text = faker.Lorem.Slug(100),
+                    Position = random.Next(0, 3)
+                };
+
+                list.Add(content);
+            }
+
+            return list;
         }
     }
 }
