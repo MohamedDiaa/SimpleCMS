@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using SimpleCMS.Components;
 using SimpleCMS.Components.Account;
 using SimpleCMS.Data;
+using SimpleCMS.Service;
 
 namespace SimpleCMS
 {
@@ -44,6 +45,7 @@ namespace SimpleCMS
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+            builder.Services.AddScoped<IGetCurrentUserService, GetCurrentUserService>();
 
             var app = builder.Build();
 
