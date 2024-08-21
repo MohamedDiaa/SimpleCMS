@@ -7,6 +7,6 @@ namespace SimpleCMS.Service
     public interface IGetCurrentUserService
     {
 
-        public  Task<ApplicationUser> GetCurrentUserAsync(AuthenticationStateProvider GetAuthenticationStateAsync, ApplicationDbContext dbContext);
+        public  Task<ApplicationUser> GetCurrentUserAsync();
       }
 }

@@ -7,8 +7,17 @@ namespace SimpleCMS.Service
 {
     public class GetCurrentUserService : IGetCurrentUserService
     {
- 
-        public async Task<ApplicationUser> GetCurrentUserAsync(AuthenticationStateProvider GetAuthenticationStateAsync, ApplicationDbContext dbContext)
+
+        private readonly AuthenticationStateProvider GetAuthenticationStateAsync;
+        private readonly ApplicationDbContext dbContext;
+
+        public GetCurrentUserService(AuthenticationStateProvider getAuthenticationStateAsync, ApplicationDbContext dbContext)
+        {
+            GetAuthenticationStateAsync = getAuthenticationStateAsync;
+            this.dbContext = dbContext;
+        }
+
+        public async Task<ApplicationUser> GetCurrentUserAsync()
         {
             var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
             var authuser = authstate.User;
