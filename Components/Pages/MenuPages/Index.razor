@@ -9,7 +9,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
+<h1>Your WebSite List</h1>
 
 <p>
     <a href="menus/create">Create New</a>
@@ -23,8 +23,8 @@
     <TemplateColumn Context="menu">
         <a href="@($"menus/edit?id={menu.Id}")">Edit</a> |
         <a href="@($"menus/details?id={menu.Id}")">Details</a> |
-        <a href="@($"menus/delete?id={menu.Id}")">Delete</a>
-        <a href="@($"/menuitems/create?MenuId={menu.Id}")">Create Items</a>
+        <a href="@($"menus/delete?id={menu.Id}")">Delete</a> |
+        <a href="@($"/menuitems/create?MenuId={menu.Id}")">Create Items</a> |
         <a href="@($"menuitems?MenuId={menu.Id}")">List Items</a>
     </TemplateColumn>
 </QuickGrid>

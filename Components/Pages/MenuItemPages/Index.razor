@@ -9,7 +9,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
+<h1>Website: @Menu.Title</h1>
 
 <p>
     <a href="menuitems/create">Create New</a>
@@ -31,9 +31,18 @@
 
     ApplicationDbContext context = default!;
 
-    
+
     [SupplyParameterFromQuery]
     public int MenuId { get; set; }
+
+    public Menu Menu { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+       this.Menu = context.Menu.FirstOrDefault(m => m.Id == MenuId);
+
+        return base.OnParametersSetAsync();
+    }
 
     protected override void OnInitialized()
     {
