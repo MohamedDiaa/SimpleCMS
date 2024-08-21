@@ -1,0 +1,44 @@
+﻿@page "/menuitems"
+
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using SimpleCMS.Model
+@using SimpleCMS.Data
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@implements IAsyncDisposable
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="menuitems/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.MenuItem.Where(m => m.MenuId == MenuId).AsQueryable()">
+    <PropertyColumn Property="menuitem => menuitem.Title" />
+    <PropertyColumn Property="menuitem => menuitem.Position" />
+    <PropertyColumn Property="menuitem => menuitem.MenuId" />
+
+    <TemplateColumn Context="menuitem">
+        <a href="@($"menuitems/edit?id={menuitem.Id}")">Edit</a> |
+        <a href="@($"menuitems/details?id={menuitem.Id}")">Details</a> |
+        <a href="@($"menuitems/delete?id={menuitem.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+
+    ApplicationDbContext context = default!;
+
+    
+    [SupplyParameterFromQuery]
+    public int MenuId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

@@ -23,6 +23,7 @@ namespace SimpleCMS.Data
             builder.Entity<SimpleCMS.Model.Menu>()
                 .HasMany(m => m.Items)
                 .WithOne(i => i.Menu)
+                .HasForeignKey(i => i.MenuId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 

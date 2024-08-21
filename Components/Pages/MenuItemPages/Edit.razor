@@ -1,0 +1,100 @@
+﻿@page "/MenuItems/edit"
+
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>MenuItem</h4>
+<hr />
+@if (MenuItem is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="MenuItem" OnValidSubmit="UpdateMenuItem" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="MenuItem.Id" value="@MenuItem.Id" />
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <InputText id="title" @bind-Value="MenuItem.Title" class="form-control" />
+                    <ValidationMessage For="() => MenuItem.Title" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="position" class="form-label">Position:</label>
+                    <InputNumber id="position" @bind-Value="MenuItem.Position" class="form-control" />
+                    <ValidationMessage For="() => MenuItem.Position" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="menuid" class="form-label">MenuId:</label>
+                    <InputNumber id="menuid" @bind-Value="MenuItem.MenuId" class="form-control" />
+                    <ValidationMessage For="() => MenuItem.MenuId" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/menuitems">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public MenuItem? MenuItem { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        MenuItem ??= await context.MenuItem.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (MenuItem is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateMenuItem()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(MenuItem!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!MenuItemExists(MenuItem!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/menuitems");
+    }
+
+    bool MenuItemExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.MenuItem.Any(e => e.Id == id);
+    }
+}

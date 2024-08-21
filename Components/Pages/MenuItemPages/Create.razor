@@ -1,0 +1,57 @@
+﻿@page "/menuitems/create"
+
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>MenuItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="MenuItem" OnValidSubmit="AddMenuItem" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label> 
+                <InputText id="title" @bind-Value="MenuItem.Title" class="form-control" /> 
+                <ValidationMessage For="() => MenuItem.Title" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="position" class="form-label">Position:</label> 
+                <InputNumber id="position" @bind-Value="MenuItem.Position" class="form-control" /> 
+                <ValidationMessage For="() => MenuItem.Position" class="text-danger" /> 
+            </div>        
+               
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/menuitems">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public MenuItem MenuItem { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    public int MenuId { get; set; }
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddMenuItem()
+    {
+        using var context = DbFactory.CreateDbContext();
+        MenuItem.MenuId = MenuId;
+        context.MenuItem.Add(MenuItem);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo($"/menuitems?MenuId={MenuId}");
+    }
+}
