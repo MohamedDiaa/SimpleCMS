@@ -45,7 +45,7 @@ else
 }
 
 <div>
-    <a href="/menuitems">Back to List</a>
+    <a href="@($"/menuitems?MenuId={MenuId}")">Back to List</a>
 </div>
 
 @code {
@@ -54,6 +54,9 @@ else
 
     [SupplyParameterFromForm]
     public MenuItem? MenuItem { get; set; }
+
+    [SupplyParameterFromQuery]
+    public int MenuId {get; set;}
 
     protected override async Task OnInitializedAsync()
     {

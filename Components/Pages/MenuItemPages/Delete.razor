@@ -33,7 +33,7 @@
         </dl>
         <EditForm method="post" Model="menuitem" OnValidSubmit="DeleteMenuItem" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(menuitem is null)">Delete</button> |
-            <a href="/menuitems">Back to List</a>
+            <a href="@($"/menuitems?MenuId={MenuId}")">Back to List</a>
         </EditForm>
     }
 </div>
@@ -43,6 +43,9 @@
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
+
+    [SupplyParameterFromQuery]
+    public int MenuId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,6 +63,6 @@
         using var context = DbFactory.CreateDbContext();
         context.MenuItem.Remove(menuitem!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/menuitems");
+        NavigationManager.NavigateTo($"/menuitems?MenuId={MenuId}");
     }
 }

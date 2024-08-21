@@ -16,10 +16,6 @@ namespace SimpleCMS.Data
             builder.Entity<SimpleCMS.Model.Menu>()
                .HasKey(x => x.Id);
 
-
-            builder.Entity<SimpleCMS.Model.MenuItem>()
-               .HasKey(x => x.Id);
-
             builder.Entity<SimpleCMS.Model.Menu>()
                 .HasMany(m => m.Items)
                 .WithOne(i => i.Menu)
@@ -34,26 +30,26 @@ namespace SimpleCMS.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
 
-            builder.Entity<ApplicationUser>()
-                .HasData(
-                new ApplicationUser { 
-            
-                    UserName = "Mohamed Alwakil",
-                    Email = "mdalwakil@outlook.com",
-                    PasswordHash = "xxxxxxx"
-            }
-                );
+        
+            builder.Entity<MenuItem>(
+                i => {
+                    i.HasKey(i => i.Id);
 
-            /*
-            builder.Entity<Menu>()
-                .HasData(
-                new Menu { 
-                    Title = "World Trips",
-                    Description = "Blog about Traveling the world!",
-                    OwnerId
+                    i.HasOne(i => i.View)
+                    .WithOne(v => v.MenuItem)
+                    .HasForeignKey<MenuItem>(i => i.ViewId);
+                    });
+
+            builder.Entity<View>(v =>
+                { 
+                    v.HasKey(v => v.Id);
+                    v.HasMany(v => v.ContentBlocks)
+                    .WithOne(c => c.View)
+                    .HasForeignKey(c => c.ViewId);
                 }
-                );
-        */
-            }
+            );
+
+          
+        }
     }
 }

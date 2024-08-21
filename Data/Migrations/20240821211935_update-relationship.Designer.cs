@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SimpleCMS.Data;
 
@@ -11,9 +12,11 @@ using SimpleCMS.Data;
 namespace SimpleCMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240821211935_update-relationship")]
+    partial class updaterelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -294,7 +297,7 @@ namespace SimpleCMS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ViewId")
+                    b.Property<int>("ViewId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -302,8 +305,7 @@ namespace SimpleCMS.Migrations
                     b.HasIndex("MenuId");
 
                     b.HasIndex("ViewId")
-                        .IsUnique()
-                        .HasFilter("[ViewId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("MenuItem");
                 });
@@ -407,7 +409,9 @@ namespace SimpleCMS.Migrations
 
                     b.HasOne("SimpleCMS.Model.View", "View")
                         .WithOne("MenuItem")
-                        .HasForeignKey("SimpleCMS.Model.MenuItem", "ViewId");
+                        .HasForeignKey("SimpleCMS.Model.MenuItem", "ViewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Menu");
 

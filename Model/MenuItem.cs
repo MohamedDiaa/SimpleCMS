@@ -11,5 +11,8 @@
         public int MenuId { get; set; }
         public Menu Menu { get; set; }
     
+        public int? ViewId { get; set; }
+
+        public View? View { get; set; }
     }
 }

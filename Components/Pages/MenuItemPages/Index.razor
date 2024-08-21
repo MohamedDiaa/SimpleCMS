@@ -12,18 +12,17 @@
 <h1>Website: @Menu.Title</h1>
 
 <p>
-    <a href="menuitems/create">Create New</a>
+    <a href="@($"menuitems/create?MenuId={MenuId}")">Create New</a>
 </p>
 
 <QuickGrid Class="table" Items="context.MenuItem.Where(m => m.MenuId == MenuId).AsQueryable()">
     <PropertyColumn Property="menuitem => menuitem.Title" />
     <PropertyColumn Property="menuitem => menuitem.Position" />
-    <PropertyColumn Property="menuitem => menuitem.MenuId" />
-
+   
     <TemplateColumn Context="menuitem">
-        <a href="@($"menuitems/edit?id={menuitem.Id}")">Edit</a> |
-        <a href="@($"menuitems/details?id={menuitem.Id}")">Details</a> |
-        <a href="@($"menuitems/delete?id={menuitem.Id}")">Delete</a>
+        <a href="@($"menuitems/edit?id={menuitem.Id}&MenuId={MenuId}")">Edit</a> |
+        <a href="@($"menuitems/details?id={menuitem.Id}&MenuId={MenuId}")">Details</a> |
+        <a href="@($"menuitems/delete?id={menuitem.Id}&MenuId={MenuId}")">Delete</a>
     </TemplateColumn>
 </QuickGrid>
 
