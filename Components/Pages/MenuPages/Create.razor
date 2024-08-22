@@ -1,10 +1,8 @@
 ﻿@page "/menus/create"
+@attribute [Authorize]
 
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.EntityFrameworkCore
-@using SimpleCMS.Data
-@using SimpleCMS.Model
-@using SimpleCMS.Service
+
 @inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
 @inject IGetCurrentUserService GetCurrentUserService

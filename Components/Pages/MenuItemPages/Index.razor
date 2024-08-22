@@ -1,9 +1,7 @@
 ﻿@page "/menuitems"
+@attribute [Authorize]
 
-@using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
-@using SimpleCMS.Model
-@using SimpleCMS.Data
 @inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
 @implements IAsyncDisposable
 

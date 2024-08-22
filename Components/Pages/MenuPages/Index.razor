@@ -1,4 +1,5 @@
 ﻿@page "/menus"
+@attribute [Authorize]
 
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
@@ -24,8 +25,6 @@
         <a href="@($"WebSiteViewer?id={menu.Id}")">Visit</a> |
         <a href="@($"menus/edit?id={menu.Id}")">Edit</a> |
         <a href="@($"menus/details?id={menu.Id}")">Details</a> |
-        <a href="@($"menus/delete?id={menu.Id}")">Delete</a> |
-        <a href="@($"/menuitems/create?MenuId={menu.Id}")">Create Items</a> |
         <a href="@($"menuitems?MenuId={menu.Id}")">List Items</a>
     </TemplateColumn>
 </QuickGrid>

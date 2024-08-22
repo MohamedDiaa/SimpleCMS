@@ -1,7 +1,6 @@
 ﻿@page "/menuitems/delete"
+@attribute [Authorize]
 
-@using Microsoft.EntityFrameworkCore
-@using SimpleCMS.Model
 @inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
 

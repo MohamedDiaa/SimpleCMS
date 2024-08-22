@@ -1,8 +1,7 @@
 ﻿@page "/menuitems/create"
+@attribute [Authorize]
 
 @rendermode InteractiveServer
-@using Microsoft.EntityFrameworkCore
-@using SimpleCMS.Model
 @inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
 @inject NavigationManager NavigationManager
 
