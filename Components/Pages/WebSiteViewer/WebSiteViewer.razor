@@ -1,5 +1,5 @@
 ﻿@page "/WebSiteViewer"
-
+@layout SimpleCMS.Components.Layout.EmptyLayout
 @using Microsoft.EntityFrameworkCore
 @using SimpleCMS.Model
 @inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
@@ -60,6 +60,7 @@
 
 @code {
     Menu? menu;
+   
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
