@@ -21,8 +21,11 @@
         <div>
             <a href="@($"/menus/edit?id={menu.Id}")">Edit Menu</a> |
             <a href="@($"/menus")">Back to List</a> |
-            <a href="" @onclick="OpenEditView" @onclick:preventDefault>Edit WebPage</a>
-
+            @if (MenuItem.View != null)
+            {
+            <a href="@($"/Views/edit?Id={MenuItem.View.Id}")">Edit WebPage</a> 
+         
+            }
         </div>
 
         <ul>
@@ -59,8 +62,9 @@
 
 
 @code {
+
     Menu? menu;
-   
+    MenuItem? MenuItem;
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
@@ -80,13 +84,20 @@
 
         if (MenuItemId == 0)
         {
-            MenuItemId = menu.Items.Select(i => i.MenuId).FirstOrDefault();
+            MenuItem = menu.Items.FirstOrDefault();
+            MenuItemId = MenuItem.Id;
+        }
+        else
+        {
+            MenuItem = await context.MenuItem.Include(m => m.View).FirstOrDefaultAsync(m => m.Id == MenuItemId);
         }
     }
 
-
+    // NOT WORKING
+    // interactive mode server issue
     public async void OpenEditView()
     {
+        // <a href="" @onclick="OpenEditView" @onclick:preventDefault>Edit WebPage</a>
         using var context = DbFactory.CreateDbContext();
         var View = await context.View.FirstOrDefaultAsync(v => v.MenuItemId == MenuItemId);
 

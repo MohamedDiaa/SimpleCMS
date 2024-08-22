@@ -31,18 +31,22 @@ namespace SimpleCMS.Data
 
 
         
-            builder.Entity<MenuItem>(
-                i => {
-                    i.HasKey(i => i.Id);
+            builder.Entity<MenuItem>( i => 
+                {
+                   i.HasKey(i => i.Id);
+                    
+                }
+                );
 
-                    i.HasOne(i => i.View)
-                    .WithOne(v => v.MenuItem)
-                    .HasForeignKey<MenuItem>(i => i.ViewId);
-                    });
 
             builder.Entity<View>(v =>
                 { 
                     v.HasKey(v => v.Id);
+
+                    v.HasOne(i => i.MenuItem)
+                    .WithOne(v => v.View)
+                    .HasForeignKey<View>(v => v.MenuItemId);
+
                     v.HasMany(v => v.ContentBlocks)
                     .WithOne(c => c.View)
                     .HasForeignKey(c => c.ViewId);
