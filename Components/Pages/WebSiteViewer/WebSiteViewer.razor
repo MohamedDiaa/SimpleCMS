@@ -19,14 +19,16 @@
     {
     
         <div>
-            <a href="@($"/menus/edit?id={menu.Id}")">Edit</a> |
-            <a href="@($"/menus")">Back to List</a>
+            <a href="@($"/menus/edit?id={menu.Id}")">Edit Menu</a> |
+            <a href="@($"/menus")">Back to List</a> |
+            <a href="" @onclick="OpenEditView" @onclick:preventDefault>Edit WebPage</a>
+
         </div>
 
         <ul>
         @foreach (var item in menu.Items)
         {
-                <li><a href="@($"WebSiteViewer?Id={Id}&MenuItemId={item.Id}")">@item.Title</a></li>
+                <li><a href="@($"/WebSiteViewer?Id={Id}&MenuItemId={item.Id}")">@item.Title</a></li>
         
         }
         </ul>
@@ -80,4 +82,16 @@
             MenuItemId = menu.Items.Select(i => i.MenuId).FirstOrDefault();
         }
     }
+
+
+    public async void OpenEditView()
+    {
+        using var context = DbFactory.CreateDbContext();
+        var View = await context.View.FirstOrDefaultAsync(v => v.MenuItemId == MenuItemId);
+
+        if(View != null)
+        {
+            NavigationManager.NavigateTo($"/Views/edit?Id={View.Id}");
+        }
+      }
 }
