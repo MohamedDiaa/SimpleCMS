@@ -1,0 +1,37 @@
+﻿@page "/views"
+
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using SimpleCMS.Model
+@using SimpleCMS.Data
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@implements IAsyncDisposable
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="views/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.View">
+    <PropertyColumn Property="view => view.MenuItemId" />
+
+    <TemplateColumn Context="view">
+        <a href="@($"views/edit?id={view.Id}")">Edit</a> |
+        <a href="@($"views/details?id={view.Id}")">Details</a> |
+        <a href="@($"views/delete?id={view.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    ApplicationDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

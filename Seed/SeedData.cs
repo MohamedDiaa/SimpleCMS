@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Microsoft.EntityFrameworkCore;
 using SimpleCMS.Data;
 using SimpleCMS.Model;
 
@@ -15,27 +16,38 @@ namespace SimpleCMS.Seed
                 return;
             }
 
-            var user = context.Users.FirstOrDefault();
-            if (user == null) {
+            var userId = context.Users.Where(u => EF.Functions.Like(u.Email, "mdalwakil@outlook.com")).Select(u => u.Id).FirstOrDefault();
+            if (userId == null) {
                 return;
             }
 
-            var menus = CreateMenus(user.Id);
+            var menus = CreateMenus(userId);
  
             await context.AddRangeAsync(menus);
             context.SaveChanges();
+
+            var list = new List<View>();
+            var menuItemsIds = context.MenuItem.Select(i => i.Id).ToList();
+            foreach (var Id in menuItemsIds) {
+               var view =  CreateView(Id);
+                list.Add(view);
+            }
+
+            context.AddRangeAsync(list);
+            context.SaveChanges();
+
         }
         private static ICollection<Menu> CreateMenus(string OwnerId) {
 
             var list = new List<Menu>();
 
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 10; i++) {
 
                 var menu = new Menu
                 {
                     Title = faker.Lorem.Slug(2),
                     Description = faker.Lorem.Sentence(),
-                    Items = CreateMenuItems(random.Next(0, 8)),
+                    Items = CreateMenuItems(random.Next(3, 8)),
                     OwnerId = OwnerId
                 };
 
@@ -54,8 +66,7 @@ namespace SimpleCMS.Seed
                 var menuItem = new MenuItem
                 {
                     Title = faker.Lorem.Slug(2),
-                    Position = random.Next(0,count),
-                    View = CreateView()
+                    Position = random.Next(0,count),                    
                 };
 
                 list.Add(menuItem);
@@ -64,12 +75,12 @@ namespace SimpleCMS.Seed
             return list;
         }
 
-        private static View CreateView()
+        private static View CreateView(int menuItemId)
         {
                 var view =  new View
                 {
-                    ContentBlocks = CreateContentBlocks()
-                  
+                    ContentBlocks = CreateContentBlocks(),
+                    MenuItemId = menuItemId
                 };
            
             return view;

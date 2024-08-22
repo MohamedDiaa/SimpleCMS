@@ -1,0 +1,46 @@
+﻿@page "/views/create"
+
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>View</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="View" OnValidSubmit="AddView" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="menuitemid" class="form-label">MenuItemId:</label> 
+                <InputNumber id="menuitemid" @bind-Value="View.MenuItemId" class="form-control" /> 
+                <ValidationMessage For="() => View.MenuItemId" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/views">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public View View { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddView()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.View.Add(View);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/views");
+    }
+}

@@ -1,0 +1,90 @@
+﻿@page "/Views/edit"
+
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>View</h4>
+<hr />
+@if (View is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="View" OnValidSubmit="UpdateView" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="View.Id" value="@View.Id" />
+                <div class="mb-3">
+                    <label for="menuitemid" class="form-label">MenuItemId:</label>
+                    <InputNumber id="menuitemid" @bind-Value="View.MenuItemId" class="form-control" />
+                    <ValidationMessage For="() => View.MenuItemId" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/views">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public View? View { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        View ??= await context.View.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (View is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateView()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(View!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ViewExists(View!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/views");
+    }
+
+    bool ViewExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.View.Any(e => e.Id == id);
+    }
+}

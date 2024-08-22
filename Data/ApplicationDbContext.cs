@@ -49,7 +49,20 @@ namespace SimpleCMS.Data
                 }
             );
 
-         
+            /*
+            builder.Entity<ApplicationUser>()
+                .HasData(
+                    new ApplicationUser
+                    {
+                        UserName = "Mohamed Alwakil",
+                        Email = "mdalwakil@outlook.com",
+                        PasswordHash = "AQAAAAIAAYagAAAAEKcSVPaycPDTR7CoDQSmCZ8rwDHNgOEGXeAgtcYOUyhhvwYhq5B9tjFQj7PH9sh2cQ==",
+                        EmailConfirmed = true,
+                        TwoFactorEnabled = false
+                    }
+                );
+         */
         }
+        public DbSet<SimpleCMS.Model.View> View { get; set; } = default!;
     }
 }

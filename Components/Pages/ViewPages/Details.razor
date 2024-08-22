@@ -1,0 +1,54 @@
+﻿@page "/views/details"
+
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>View</h4>
+    <hr />
+    @if (view is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <dl class="row">
+            <dt class="col-sm-2">MenuItemId</dt>
+            <dd class="col-sm-10">@view.MenuItemId</dd>
+        </dl>
+        <div>
+            <a href="@($"/views/edit?id={view.Id}")">Edit</a> |
+            <a href="@($"/views")">Back to List</a>
+        </div>
+
+        @foreach (var block in view.ContentBlocks)
+        {
+            <p>@block.Text</p>
+        }
+
+    }
+</div>
+
+@code {
+    View? view;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        view = await context.View.Include(m => m.ContentBlocks).FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (view is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
