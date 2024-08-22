@@ -10,26 +10,30 @@ namespace SimpleCMS.Seed
 
         private static Faker faker = new Faker();
         private static Random random = new Random();
-        public static async void InitAsync(ApplicationDbContext context) {
+        public static async void InitAsync(ApplicationDbContext context)
+        {
 
-            if (context.Menu.Any()) {
+            if (context.Menu.Any())
+            {
                 return;
             }
 
             var userId = context.Users.Where(u => EF.Functions.Like(u.Email, "mdalwakil@outlook.com")).Select(u => u.Id).FirstOrDefault();
-            if (userId == null) {
+            if (userId == null)
+            {
                 return;
             }
 
             var menus = CreateMenus(userId);
- 
+
             await context.AddRangeAsync(menus);
             context.SaveChanges();
 
             var list = new List<View>();
             var menuItemsIds = context.MenuItem.Select(i => i.Id).ToList();
-            foreach (var Id in menuItemsIds) {
-               var view =  CreateView(Id);
+            foreach (var Id in menuItemsIds)
+            {
+                var view = CreateView(Id);
                 list.Add(view);
             }
 
@@ -37,11 +41,13 @@ namespace SimpleCMS.Seed
             context.SaveChanges();
 
         }
-        private static ICollection<Menu> CreateMenus(string OwnerId) {
+        private static ICollection<Menu> CreateMenus(string OwnerId)
+        {
 
             var list = new List<Menu>();
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 10; i++)
+            {
 
                 var menu = new Menu
                 {
@@ -66,7 +72,7 @@ namespace SimpleCMS.Seed
                 var menuItem = new MenuItem
                 {
                     Title = faker.Lorem.Slug(2),
-                    Position = random.Next(0,count),                    
+                    Position = random.Next(0, count),
                 };
 
                 list.Add(menuItem);
@@ -77,32 +83,41 @@ namespace SimpleCMS.Seed
 
         private static View CreateView(int menuItemId)
         {
-                var view =  new View
-                {
-                    ContentBlocks = CreateContentBlocks(),
-                    MenuItemId = menuItemId
-                };
-           
+            var view = new View
+            {
+                ContentBlocks = CreateContentBlocks(),
+                MenuItemId = menuItemId
+            };
+
             return view;
         }
 
         private static ICollection<ContentBlock> CreateContentBlocks()
         {
 
-            var list = new List<ContentBlock>();
-            for (int i = 0; i < 3; i++)
+            var list = new List<ContentBlock>
             {
+              new ContentBlock
+            {
+                Text = faker.Lorem.Slug(3),
+                Position = 0
+            },
 
-                var content = new ContentBlock
-                {
-                    Text = faker.Lorem.Slug(100),
-                    Position = random.Next(0, 3)
-                };
+            new ContentBlock
+            {
+                Text = faker.Lorem.Slug(100),
+                Position = 1,
+                Image ="https://picsum.photos/200/300?random=" + $"{random.Next(1,10000)}",
 
-                list.Add(content);
+            },
+             new ContentBlock
+            {
+                Text = faker.Lorem.Slug(10),
+                Position = 2
             }
+            };
 
-            return list;
+        return list;
         }
     }
 }

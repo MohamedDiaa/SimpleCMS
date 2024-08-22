@@ -30,6 +30,10 @@
         @foreach (var block in view.ContentBlocks)
         {
             <p>@block.Text</p>
+            @if (block.Image != null)
+            {
+                <img width="300" height="300" src=@block.Image />
+            }
         }
 
     }
