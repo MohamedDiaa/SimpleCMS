@@ -21,6 +21,7 @@
     <PropertyColumn Property="menu => menu.Icon" />
 
     <TemplateColumn Context="menu">
+        <a href="@($"WebSiteViewer?id={menu.Id}")">Visit</a> |
         <a href="@($"menus/edit?id={menu.Id}")">Edit</a> |
         <a href="@($"menus/details?id={menu.Id}")">Details</a> |
         <a href="@($"menus/delete?id={menu.Id}")">Delete</a> |

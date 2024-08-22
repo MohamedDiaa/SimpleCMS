@@ -1,0 +1,37 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+
+<h3>WebPageViewer</h3>
+
+@if (View is null)
+{
+    <p><em>Loading...</em></p>
+}
+else {
+
+    @foreach (var block in View.ContentBlocks)
+    {
+        <p>@block.Text</p>
+        @if (block.Image != null)
+        {
+            <img width="300" height="300" src=@block.Image />
+        }
+    }
+}
+
+
+@code {
+
+    [Parameter]
+    public int MenuItemId { get; set; }
+
+    View View; 
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        View = await context.View.Include(v => v.ContentBlocks).FirstOrDefaultAsync(m => m.MenuItemId == MenuItemId);
+
+    }
+
+}

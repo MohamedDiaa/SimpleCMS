@@ -1,0 +1,80 @@
+﻿@page "/WebSiteViewer"
+
+@using Microsoft.EntityFrameworkCore
+@using SimpleCMS.Model
+@inject IDbContextFactory<SimpleCMS.Data.ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>zz</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Menu</h4>
+    <hr />
+    @if (menu is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+      
+        <div>
+            <a href="@($"/menus/edit?id={menu.Id}")">Edit</a> |
+            <a href="@($"/menus")">Back to List</a>
+        </div>
+
+        <ul>
+        @foreach (var item in menu.Items)
+        {
+                <li><a href="">@item.Title</a></li>
+        
+        }
+        </ul>
+
+        <WebPageViewer MenuItemId=MenuItemId></WebPageViewer>
+        
+    }
+</div>
+
+    <style>
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+        }
+
+        li {
+          float: left;
+        }
+
+        li a {
+          display: block;
+          padding: 8px;
+          background-color: #dddddd;
+        }
+    </style>
+
+
+@code {
+    Menu? menu;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    public int MenuItemId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        menu = await context.Menu.Include(m => m.Items).FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (menu is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+       MenuItemId =  menu.Items.Select(i => i.MenuId).FirstOrDefault();
+    }
+}
