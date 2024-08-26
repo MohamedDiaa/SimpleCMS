@@ -75,7 +75,7 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        menu = await context.Menu.Include(m => m.Items).FirstOrDefaultAsync(m => m.Id == Id);
+        menu = await context.Menu.Include(m => m.Items).ThenInclude(i => i.View).FirstOrDefaultAsync(m => m.Id == Id);
 
         if (menu is null)
         {
