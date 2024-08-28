@@ -19,12 +19,12 @@ namespace SimpleCMS.Seed
         public static async Task InitAsync(ApplicationDbContext context, IRegisterUserService registerService)
         {
 
-            if (context.Menu.Any())
+            if (context.Menu.Any() && context.Menu.Count() < 10)
             {
                 return;
             }
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 4; i++)
             {
                 var fName = faker.Name.FirstName();
                 var lName = faker.Name.LastName();
@@ -32,6 +32,9 @@ namespace SimpleCMS.Seed
                 var result = await registerService.Register(email, "pSrkXHN6z8s%KHW@");
                 Console.WriteLine(result);
             }
+
+            var result1 = await registerService.Register(@"mdalwakil@outlook.com", "pSrkXHN6z8s%KHW@");
+            Console.WriteLine(result1);
 
             var userId = context.Users.Where(u => EF.Functions.Like(u.Email, "mdalwakil@outlook.com")).Select(u => u.Id).FirstOrDefault();
             if (userId == null)

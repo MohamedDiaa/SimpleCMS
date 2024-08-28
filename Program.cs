@@ -45,7 +45,6 @@ namespace SimpleCMS
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-
             builder.Services.AddScoped<IGetCurrentUserService, GetCurrentUserService>();
             builder.Services.AddScoped<IRegisterUserService, RegisterUserService>();
 
