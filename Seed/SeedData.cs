@@ -1,7 +1,13 @@
 ﻿using Bogus;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using SimpleCMS.Data;
 using SimpleCMS.Model;
+using SimpleCMS.Service;
 
 namespace SimpleCMS.Seed
 {
@@ -10,12 +16,21 @@ namespace SimpleCMS.Seed
 
         private static Faker faker = new Faker();
         private static Random random = new Random();
-        public static async void InitAsync(ApplicationDbContext context)
+        public static async Task InitAsync(ApplicationDbContext context, IRegisterUserService registerService)
         {
 
             if (context.Menu.Any())
             {
                 return;
+            }
+
+            for (int i = 0; i < 100; i++)
+            {
+                var fName = faker.Name.FirstName();
+                var lName = faker.Name.LastName();
+                var email = faker.Internet.Email(fName, lName, "zocom.se");
+                var result = await registerService.Register(email, "pSrkXHN6z8s%KHW@");
+                Console.WriteLine(result);
             }
 
             var userId = context.Users.Where(u => EF.Functions.Like(u.Email, "mdalwakil@outlook.com")).Select(u => u.Id).FirstOrDefault();

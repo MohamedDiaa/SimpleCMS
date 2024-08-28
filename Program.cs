@@ -24,7 +24,6 @@ namespace SimpleCMS
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-
             builder.Services.AddAuthentication(options =>
                 {
                     options.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -46,7 +45,9 @@ namespace SimpleCMS
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+
             builder.Services.AddScoped<IGetCurrentUserService, GetCurrentUserService>();
+            builder.Services.AddScoped<IRegisterUserService, RegisterUserService>();
 
             var app = builder.Build();
 
